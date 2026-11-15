@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
-public class LightFlicker : MonoBehaviour
+public class LightManager : MonoBehaviour
 {
 
-    [SerializeField] Light flickerLight;
+    [SerializeField] Light[] flickerLights;
     [SerializeField] bool flicker = true;
     [SerializeField] Light[] allLights;
     [SerializeField] GameObject flashlight;
@@ -29,7 +29,7 @@ public class LightFlicker : MonoBehaviour
 
     void Update()
     {
-        if (Manager.Instance.customersServed > 1)
+        if (Manager.Instance?.customersServed > 1)
         {
             flashlight.GetComponent<Interactable>().canInteract = true;
             flashlight.transform.GetChild(1).gameObject.SetActive(true);
@@ -47,9 +47,15 @@ public class LightFlicker : MonoBehaviour
             while (!flicker)
                 yield return null;
             
-            flickerLight.enabled = false;
+            foreach (Light light in flickerLights)
+            {
+                light.enabled = false;
+            }
             yield return new WaitForSeconds(Random.Range(0.1f, 0.5f));
-            flickerLight.enabled = true;
+            foreach (Light light in flickerLights)
+            {
+                light.enabled = true;
+            }
             yield return new WaitForSeconds(Random.Range(0.1f, 1.5f));
         }
     }
